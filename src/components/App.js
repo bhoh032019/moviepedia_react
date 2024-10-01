@@ -1,9 +1,9 @@
+import { getReviews } from '../api';
 import ReviewList from './ReviewList';
-import mockItems from '../mock.json';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function App() {
-  const [items, setItems] = useState(mockItems);
+  const [items, setItems] = useState([]);
   const [order, setOrder] = useState('createdAt');
   const sortedItems = items.sort((a, b) => b[order] - a[order]);
 
@@ -14,6 +14,15 @@ function App() {
     const nextItems = items.filter((item) => item.id !== id);
     setItems(nextItems);
   };
+
+  const handleLoad = async (orderQuery) => {
+    const { reviews } = await getReviews(orderQuery);
+    setItems(reviews);
+  };
+
+  useEffect(() => {
+    handleLoad(order);
+  }, [order]);
 
   return (
     <div>
